@@ -1,7 +1,8 @@
 streamlit
 opencv-python-headless
 deepface
-tensorflow
+tensorflow-cpu
 tf-keras
 pandas
 numpy
+pillow
