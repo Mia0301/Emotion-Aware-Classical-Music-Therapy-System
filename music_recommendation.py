@@ -19,14 +19,14 @@ def recommend_music(emotion):
                     "title": "Mozart - Piano Sonata No.16",
                     "composer": "Wolfgang Amadeus Mozart",
                     "era": "Classical Period",
-                    "reason": "Light and bright piano style helps maintain positive mood.",
+                    "reason": "Light and bright piano style helps maintain a positive mood.",
                     "url": "https://www.youtube.com/results?search_query=Mozart+Piano+Sonata+No+16"
                 },
                 {
                     "title": "Beethoven - Für Elise",
                     "composer": "Ludwig van Beethoven",
                     "era": "Classical / Romantic",
-                    "reason": "Familiar and lively melody suitable for a pleasant mood.",
+                    "reason": "Familiar and lively melody is suitable for a pleasant mood.",
                     "url": "https://www.youtube.com/results?search_query=Beethoven+Fur+Elise+piano"
                 }
             ]
@@ -139,7 +139,7 @@ def recommend_music(emotion):
                     "title": "Beethoven - Für Elise",
                     "composer": "Ludwig van Beethoven",
                     "era": "Classical / Romantic",
-                    "reason": "Recognizable melody creates light and active feeling.",
+                    "reason": "Recognizable melody creates a light and active feeling.",
                     "url": "https://www.youtube.com/results?search_query=Beethoven+Fur+Elise+piano"
                 },
                 {
