@@ -1,5 +1,6 @@
 import streamlit as st
 import cv2
+import numpy as np
 import pandas as pd
 from deepface import DeepFace
 from music_recommendation import recommend_music
@@ -65,7 +66,7 @@ with st.sidebar:
 
     mode = st.radio(
         "Choose Mode",
-        ["Webcam Detection", "Manual Demo"]
+        ["Camera Detection", "Manual Demo"]
     )
 
     st.markdown("---")
@@ -96,60 +97,63 @@ col1, col2 = st.columns([1.2, 1])
 detected_emotion = None
 
 # ==========================
-# Left: Emotion Detection
+# Left Panel
 # ==========================
 with col1:
     st.markdown('<div class="card">', unsafe_allow_html=True)
 
     st.subheader("Emotion Detection")
 
-    if mode == "Webcam Detection":
-        st.write("Click the button to capture one webcam image and analyze emotion.")
+    if mode == "Camera Detection":
+        st.write("Take a photo and analyze your facial emotion.")
 
-        detect = st.button("Detect Emotion")
-        frame_placeholder = st.empty()
+        uploaded_file = st.camera_input("Take a Photo")
 
-        if detect:
-            cap = cv2.VideoCapture(0)
-            ret, frame = cap.read()
-            cap.release()
+        if uploaded_file is not None:
+            try:
+                file_bytes = np.asarray(
+                    bytearray(uploaded_file.read()),
+                    dtype=np.uint8
+                )
 
-            if not ret:
-                st.error("Cannot access webcam.")
-            else:
-                try:
-                    result = DeepFace.analyze(
-                        frame,
-                        actions=["emotion"],
-                        enforce_detection=False
-                    )
+                frame = cv2.imdecode(
+                    file_bytes,
+                    cv2.IMREAD_COLOR
+                )
 
-                    if isinstance(result, list):
-                        result = result[0]
+                result = DeepFace.analyze(
+                    frame,
+                    actions=["emotion"],
+                    enforce_detection=False
+                )
 
-                    detected_emotion = result["dominant_emotion"]
-                    st.session_state.emotion_scores = result["emotion"]
+                if isinstance(result, list):
+                    result = result[0]
 
-                    cv2.putText(
-                        frame,
-                        f"Emotion: {detected_emotion}",
-                        (20, 50),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        1,
-                        (0, 255, 0),
-                        2
-                    )
+                detected_emotion = result["dominant_emotion"]
+                st.session_state.emotion_scores = result["emotion"]
 
-                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                cv2.putText(
+                    frame,
+                    f"Emotion: {detected_emotion}",
+                    (20, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (0, 255, 0),
+                    2
+                )
 
-                    frame_placeholder.image(
-                        frame,
-                        caption="Captured Webcam Image"
-                    )
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-                except Exception as e:
-                    st.error("Emotion detection failed. Please try again.")
-                    st.write(e)
+                st.image(
+                    frame,
+                    caption="Captured Image",
+                    use_container_width=True
+                )
+
+            except Exception as e:
+                st.error("Emotion detection failed. Please try again.")
+                st.write(e)
 
     else:
         detected_emotion = st.selectbox(
@@ -186,7 +190,7 @@ with col1:
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================
-# Right: Recommendation Result
+# Right Panel
 # ==========================
 with col2:
     st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -332,9 +336,7 @@ if st.session_state.history:
     st.dataframe(df)
 
     st.subheader("Emotion Statistics")
-
     emotion_count = df["emotion"].value_counts()
-
     st.bar_chart(emotion_count)
 
 else:
