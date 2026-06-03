@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 from music_recommendation import recommend_music
 from datetime import datetime
+from tensorflow.keras.models import load_model
+
+model = load_model("emotion_model.keras")
 
 st.set_page_config(
     page_title="Emotion-Aware Classical Music Therapy System",
